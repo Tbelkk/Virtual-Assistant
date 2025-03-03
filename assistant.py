@@ -9,7 +9,6 @@ import wave
 import keyboard
 from datetime import datetime
 
-hot_key = keyboard.is_pressed('#')
 current_time_str = datetime.now().strftime('%H')
 current_time = int(current_time_str)
 
@@ -62,8 +61,8 @@ def close_app(app_name):
         }
 
         if app_name in apps:
-            os.system(f"taskkill {apps[app_name]}")
-            print(f"Opening {app_name}")
+            os.system(f"taskkill /im {apps[app_name]} /f")
+            print(f"Closing {app_name}")
         else:
             print(f"Application {app_name} not recognized")
 
@@ -83,8 +82,6 @@ def listen():
     with sr.Microphone() as source:
         print("Listening...")
 
-        r.adjust_for_ambient_noise(source)
-
         audio = r.listen(source, timeout=None)
         
         try:
@@ -102,42 +99,49 @@ if __name__ == "__main__":
     greetTime()
 
     while True:
-            command = listen()
+            
+            try:
+                if keyboard.is_pressed("/"):
+                    command = listen()
 
-            app_name = command.split("open ")[1]
+                    #command for this is Open {app name}
+                    if command.split()[0] == "open":
+                        open_app_name = command.split("open ")[1]
+                        open_app(open_app_name)
 
-            #command for this is Open app {app name}
-            if command.split()[0] == "open":
-                open_app(app_name)
+                    #command for this is Close {app name}
+                    if command.split()[0] == "close":
+                        close_app_name = command.split("close ")[1]
+                        close_app(close_app_name)
 
-            #command for this is Close app {app name}
-            if command.split()[0] == "close":
-                close_app(app_name)
+                    """
+                    #command for this is Exit genius bot
+                    if command == "exit genius bot":
+                        close_program()
 
-            """
-            #command for this is Exit genius bot
-            if command == "exit genius bot":
-                close_program()
+                    #command for this is Restart Computer
+                    if command == "restart computer":
+                        restart_computer()
 
-            #command for this is Restart Computer
-            if command == "restart computer":
-                restart_computer()
+                    #command for this is Shutdown Computer
+                    if command.split() == "shutdown computer":
+                        shutdown_computer()
 
-            #command for this is Shutdown Computer
-            if command.split() == "shutdown computer":
-                shutdown_computer()
+                    #command for this is Lower Volume
+                    if command == "lower volume":
+                        lower_volume()
 
-            #command for this is Lower Volume
-            if command == "lower volume":
-                lower_volume()
+                    #command for this is Raise Volume
+                    if command == "raise volume":
+                        raise_volume()
 
-            #command for this is Raise Volume
-            if command == "raise volume":
-                raise_volume()
-
-            #command for this is Ask Ai
-            if command == "ask ai":
-                ask_chatgpt()
-            """
+                    #command for this is Ask Ai
+                    if command == "ask ai":
+                        ask_chatgpt()
+                    """
+            except Exception as e:
+                print(f"Error: {e}")
+                tts("Alert me when you're actually ready!")
+                continue  
         
 
