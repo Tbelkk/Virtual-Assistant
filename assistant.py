@@ -132,26 +132,21 @@ def greetTime():
 def listen():
     r = sr.Recognizer()
     command = ""
-    with sr.Microphone() as source:
-        print("Listening...")
-        tts("Listening...")
-
-        audio = r.listen(source, timeout=None)
-        
-        try:
+    try:
+        with sr.Microphone() as mic:
+            print("Listening...")
+            tts("Listening...")
+            audio = r.listen(mic, timeout=None)
             command = r.recognize_google(audio).lower()
             print(command)
-        except sr.UnknownValueError:
-            print("Sorry, I did not understand that.") 
-            tts("Sorry, I did not understand that.")
-        except sr.RequestError:
-            print("Sorry, I couldn't connect to the service.") 
-            tts("Sorry, I couldn't connect to the service.")
-        return command.lower()
-    
+    except sr.UnknownValueError:
+        print("Sorry, I did not understand that.") 
+        tts("Sorry, I did not understand that.")
+    except sr.RequestError:
+        print("Sorry, I couldn't connect to the service.") 
+        tts(f"Sorry, I couldn't connect to the service{greeting}.")
 
-def listen_for_hotkeys():
-    keyboard.wait()
+    return command.lower()
         
 
 keyboard.add_hotkey('esc', close_program)
