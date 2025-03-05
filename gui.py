@@ -84,5 +84,5 @@ class AppManagerGUI(tk.Tk):  # Inherit from tk.Frame instead of tk.Tk
 
 
 if __name__ == "__main__":
-    app = GeniusBot()
+    app = AppManagerGUI()
     app.mainloop()

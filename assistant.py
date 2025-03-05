@@ -147,6 +147,9 @@ def listen():
         tts(f"Sorry, I couldn't connect to the service{greeting}.")
 
     return command.lower()
+
+def listen_for_hotkeys():
+    keyboard.wait()
         
 
 keyboard.add_hotkey('esc', close_program)
