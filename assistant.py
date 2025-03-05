@@ -1,27 +1,34 @@
 import speech_recognition as sr
-from tkinter import *
 from datetime import datetime
 import pyttsx3
 import subprocess
 import os
 import psutil
 import pyautogui
-import pyaudio
 import keyboard
 import webbrowser
 import sys
 import ollama
-
-current_time_str = datetime.now().strftime('%H')
-current_time = int(current_time_str)
+import threading
+import gui
+import json
 
 greeting = "Tyler"
-r = sr.Recognizer()
 engine = pyttsx3.init(driverName='sapi5')
 
-engine.setProperty('voice', r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0")
-engine.setProperty('rate', 230)
-engine.setProperty('volume', 1)
+APPS_FILE = "apps.json"
+
+def run_gui():
+    subprocess.Popen(['python', 'gui.py'])
+
+def load_apps():
+    try:
+        with open(APPS_FILE, "r") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+apps = load_apps()
 
 
 def ai_response():
@@ -31,7 +38,7 @@ def ai_response():
     response = ollama.chat(model='llama3.2', messages=[
         {
             'role': 'system',
-            'content': 'Respond with very short and seriously to questions but make sure to say what you have done, but feel free to add snide remarks when appropriate but dont preface the remark by saying it is a snide remark. When given a command, make sure to mention whether it was completed or not—no fluff unless youre in the mood for sarcasm, if the info is not accessible it will be given in prompt and if not say that you are not able to access it or it was not provided.',
+            'content': 'Respond with very short responses and you are pretty snarky.',
         },
         {
             'role': 'user',
@@ -47,11 +54,10 @@ def process_command(command):
         "open": lambda: open_app(command.split("open ")[1]) if  command.split()[0] == "open" else None,
         "close": lambda: close_app(command.split("close ")[1]) if command.split()[0] == "close" else None,
         "exit": lambda: close_program() if command == "exit program" else None,
-        "window": lambda: open_gui() if command == "window" else None,
-        #"restart": lambda: restart_computer() if command == "restart computer" else None,
-        #"shutdown": lambda: shutdown_computer() if command == "shutdown computer" else None,
-        # "lower": lambda: lower_volume() if command == "lower volume" else None,
-        # "raise": lambda: raise_volume() if command == "raise volume" else None,
+        "restart": lambda: restart_computer() if command == "restart computer" else None,
+        "shutdown": lambda: shutdown_computer() if command == "shutdown computer" else None,
+        "lower": lambda: lower_volume() if command == "lower volume" else None,
+        "raise": lambda: raise_volume() if command == "raise volume" else None,
         "ask": lambda: ai_response() if command == "ask ai" else None,
     }
     for key, action in commands.items():
@@ -62,65 +68,57 @@ def process_command(command):
 
 
 def tts(prompt):
+    engine.setProperty('voice', r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0")
+    engine.setProperty('rate', 230)
+    engine.setProperty('volume', 1)
     engine.say(prompt)
     engine.runAndWait()
     engine.stop()
 
 
-def open_gui():
-    root = Tk()
-    root.title("Genius Bot")
-    root.geometry('350x200')
-    root.mainloop()
+def restart_computer():
+    print("Restarting Computer...")
+    tts("Restarting Computer...")
+    os.system("shutdown /r /t 1")
+
+def shutdown_computer():
+    print("Shutting Down Computer...")
+    tts("Shutting Down Computer...")
+    os.system("shutdown /s /t 1")
+
+def lower_volume():
+    print("Lowering Volume")
+    
+
+def raise_volume():
+    print("Raising Volume")
 
 def close_program():
-    sys.exit(0)
+    os._exit(0)
+
 
 def open_app(app_name):
-        apps = {
-            "google": "chrome.exe",
-            "spotify": "spotify.exe",
-            "visual studio code": "vscode.exe",
-            "discord": "discord.exe",
-            "notepad": "notepad.exe",
-            "calculator": "calculator.exe",
-            "steam": "steam.exe",
-            "github desktop": "githubdesktop.exe",
-            "file explorer": "fileexplorer.exe"
-
-        }
-
-        if app_name in apps:
-            os.system(f"start {apps[app_name]}")
-            print(f"Opening {app_name}")
-            tts(f"Opening {app_name}")
-        else:
-            print(f"Application {app_name} not recognized")
-            tts(f"Application {app_name} not recognized")
+    apps = gui.get_apps()  # Get the latest app list from app_manager
+    if app_name in apps:
+        subprocess.Popen(apps[app_name], shell=True)
+        print(f"Opening {app_name}")
+        tts(f"Opening {app_name}")
+    else:
+        print(f"Application {app_name} not recognized")
+        tts(f"Application {app_name} not recognized")
 
 def close_app(app_name):
-        apps = {
-            "google": "chrome.exe",
-            "spotify": "spotify.exe",
-            "visual studio code": "visualstudiocode.exe",
-            "discord": "discord.exe",
-            "notepad": "notepad.exe",
-            "calculator": "calculator.exe",
-            "steam": "steam.exe",
-            "github desktop": "githubdesktop.exe",
-            "file explorer": "fileexplorer.exe"
-
-        }
-
-        if app_name in apps:
-            os.system(f"taskkill /im {apps[app_name]} /f")
-            print(f"Closing {app_name}")
-            tts(f"Closing {app_name}")
-        else:
-            print(f"Application {app_name} not recognized")
-            tts(f"Application {app_name} not recognized")
+    apps = gui.get_apps()  # Get the latest app list from app_manager
+    if app_name in apps:
+        subprocess.Popen(apps[app_name]).terminate()
+        print(f"Closing {app_name}")
+        tts(f"Closing {app_name}")
+    else:
+        print(f"Application {app_name} not recognized")
+        tts(f"Application {app_name} not recognized")
 
 def greetTime():
+    current_time = int(datetime.now().strftime('%H'))
     if current_time >= 4 and current_time <= 11:
         print(f"Good Morning, I hope you are doing well {greeting}! ")
         tts(f"Good Morning, I hope you are doing well {greeting}!")
@@ -132,6 +130,7 @@ def greetTime():
         tts(f"Good Evening, I hope you are doing well {greeting}!")
 
 def listen():
+    r = sr.Recognizer()
     command = ""
     with sr.Microphone() as source:
         print("Listening...")
@@ -147,23 +146,31 @@ def listen():
             tts("Sorry, I did not understand that.")
         except sr.RequestError:
             print("Sorry, I couldn't connect to the service.") 
-            tts(f"Sorry, I couldn't connect to the service{greeting}.")
+            tts("Sorry, I couldn't connect to the service.")
         return command.lower()
+    
+
+def listen_for_hotkeys():
+    keyboard.wait()
         
 
+keyboard.add_hotkey('esc', close_program)
+
+hotkey_thread = threading.Thread(target=listen_for_hotkeys, daemon=True)
+hotkey_thread.start()
+
 if __name__ == "__main__":
+    run_gui() 
     greetTime()
 
     while True:
             
             try:
-                if keyboard.is_pressed("/"):
-                    command = listen()
-                    if(process_command(command)):
-                        process_command(command)
-                    else:
-                        print("Not a valid command.")
-                        tts("Not a valid command.") 
+                keyboard.wait("/")
+                command = listen()
+                if not process_command(command):
+                    print("Not a valid command.")
+                    tts("Not a valid command.")
 
             except Exception as e:
                 print("Alert me when you're actually ready!")
