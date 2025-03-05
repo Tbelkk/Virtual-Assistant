@@ -16,7 +16,6 @@ current_time_str = datetime.now().strftime('%H')
 current_time = int(current_time_str)
 
 greeting = "Tyler"
-r = sr.Recognizer()
 engine = pyttsx3.init(driverName='sapi5')
 
 engine.setProperty('voice', r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0")
@@ -132,23 +131,23 @@ def greetTime():
         tts(f"Good Evening, I hope you are doing well {greeting}!")
 
 def listen():
+    r = sr.Recognizer()
     command = ""
-    with sr.Microphone() as source:
-        print("Listening...")
-        tts("Listening...")
-
-        audio = r.listen(source, timeout=None)
-        
-        try:
+    try:
+        with sr.Microphone() as mic:
+            print("Listening...")
+            tts("Listening...")
+            audio = r.listen(mic, timeout=None)
             command = r.recognize_google(audio).lower()
             print(command)
-        except sr.UnknownValueError:
-            print("Sorry, I did not understand that.") 
-            tts("Sorry, I did not understand that.")
-        except sr.RequestError:
-            print("Sorry, I couldn't connect to the service.") 
-            tts(f"Sorry, I couldn't connect to the service{greeting}.")
-        return command.lower()
+    except sr.UnknownValueError:
+        print("Sorry, I did not understand that.") 
+        tts("Sorry, I did not understand that.")
+    except sr.RequestError:
+        print("Sorry, I couldn't connect to the service.") 
+        tts(f"Sorry, I couldn't connect to the service{greeting}.")
+
+    return command.lower()
         
 
 if __name__ == "__main__":
