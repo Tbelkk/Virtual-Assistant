@@ -12,6 +12,7 @@ import ollama
 import threading
 import gui
 import json
+import local_llm
 
 greeting = "Tyler"
 engine = pyttsx3.init(driverName='sapi5')
@@ -30,25 +31,6 @@ def load_apps():
 
 apps = load_apps()
 
-
-def ai_response():
-
-    prompt = listen()
-
-    response = ollama.chat(model='llama3.2', messages=[
-        {
-            'role': 'system',
-            'content': 'Respond with very short responses and you are pretty snarky.',
-        },
-        {
-            'role': 'user',
-            'content': prompt,
-        },
-    ])
-    print(response['message']['content'])
-    tts(response['message']['content'])
-
-
 def process_command(command):
     commands = {
         "open": lambda: open_app(command.split("open ")[1]) if  command.split()[0] == "open" else None,
@@ -58,7 +40,7 @@ def process_command(command):
         "shutdown": lambda: shutdown_computer() if command == "shutdown computer" else None,
         "lower": lambda: lower_volume() if command == "lower volume" else None,
         "raise": lambda: raise_volume() if command == "raise volume" else None,
-        "ask": lambda: ai_response() if command == "ask ai" else None,
+        "free": lambda: local_llm.ai_response() if command == "free" else None,
     }
     for key, action in commands.items():
         if command.startswith(key):

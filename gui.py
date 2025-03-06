@@ -3,7 +3,7 @@ sys.path.append(r"C:\Users\tyler\OneDrive\Desktop\Virtual-Assistant\Virtual-Assi
 
 import customtkinter as ctk
 import settings
-import assistant
+import main
 
 
 class DashboardApp(ctk.CTk):
@@ -102,6 +102,7 @@ class TextManagerPage(ctk.CTkFrame):
     def update_textbox(self):
         self.textbox.delete("0.0", "end")
         self.textbox.insert("0.0", "\n".join(self.text_list))
+
 
 
 if __name__ == "__main__":
