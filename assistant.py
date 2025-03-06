@@ -67,10 +67,13 @@ def process_command(command):
     return False
 
 
+def engine_volume(volume):
+    engine.setProperty('volume', volume)
+    
+
 def tts(prompt):
     engine.setProperty('voice', r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0")
     engine.setProperty('rate', 230)
-    engine.setProperty('volume', 1)
     engine.say(prompt)
     engine.runAndWait()
     engine.stop()
