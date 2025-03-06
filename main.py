@@ -12,7 +12,7 @@ import ollama
 import threading
 import gui
 import json
-import local_llm
+import llm
 
 greeting = "Tyler"
 engine = pyttsx3.init(driverName='sapi5')
@@ -40,7 +40,7 @@ def process_command(command):
         "shutdown": lambda: shutdown_computer() if command == "shutdown computer" else None,
         "lower": lambda: lower_volume() if command == "lower volume" else None,
         "raise": lambda: raise_volume() if command == "raise volume" else None,
-        "free": lambda: local_llm.ai_response() if command == "free" else None,
+        "free": lambda: llm.ai_response() if command == "free" else None,
     }
     for key, action in commands.items():
         if command.startswith(key):

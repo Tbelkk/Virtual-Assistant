@@ -10,7 +10,7 @@ class DashboardApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Dashboard")
+        self.title("Genius")
         self.geometry("220x350")
         self.resizable(False, False) 
 
