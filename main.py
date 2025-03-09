@@ -47,13 +47,9 @@ def process_command(command):
             action()
             return True
     return False
-
-
-def engine_volume(volume):
-    engine.setProperty('volume', volume)
     
 
-def tts(prompt):
+def tts(prompt, value):
     engine.setProperty('voice', r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0")
     engine.setProperty('rate', 230)
     engine.say(prompt)
@@ -61,14 +57,17 @@ def tts(prompt):
     engine.stop()
 
 
+def changeVolume(value):
+    return value
+
 def restart_computer():
     print("Restarting Computer...")
-    tts("Restarting Computer...")
+    tts("Restarting Computer...", changeVolume)
     os.system("shutdown /r /t 1")
 
 def shutdown_computer():
     print("Shutting Down Computer...")
-    tts("Shutting Down Computer...")
+    tts("Shutting Down Computer...", changeVolume)
     os.system("shutdown /s /t 1")
 
 def lower_volume():
@@ -87,32 +86,32 @@ def open_app(app_name):
     if app_name in apps:
         subprocess.Popen(apps[app_name], shell=True)
         print(f"Opening {app_name}")
-        tts(f"Opening {app_name}")
+        tts(f"Opening {app_name}", changeVolume)
     else:
         print(f"Application {app_name} not recognized")
-        tts(f"Application {app_name} not recognized")
+        tts(f"Application {app_name} not recognized", changeVolume)
 
 def close_app(app_name):
     apps = gui.get_apps()  # Get the latest app list from app_manager
     if app_name in apps:
         subprocess.Popen(apps[app_name]).terminate()
         print(f"Closing {app_name}")
-        tts(f"Closing {app_name}")
+        tts(f"Closing {app_name}", changeVolume)
     else:
         print(f"Application {app_name} not recognized")
-        tts(f"Application {app_name} not recognized")
+        tts(f"Application {app_name} not recognized", changeVolume)
 
 def greetTime():
     current_time = int(datetime.now().strftime('%H'))
     if current_time >= 4 and current_time <= 11:
         print(f"Good Morning, I hope you are doing well {greeting}! ")
-        tts(f"Good Morning, I hope you are doing well {greeting}!")
+        tts(f"Good Morning, I hope you are doing well {greeting}!", changeVolume)
     elif current_time >= 12 and current_time <= 16:
         print(f"Good Afternoon, I hope you are doing well {greeting}!")
-        tts(f"Good Afternoon, I hope you are doing well {greeting}!")
+        tts(f"Good Afternoon, I hope you are doing well {greeting}!", changeVolume)
     else:
         print(f"Good Evening, I hope you are doing well {greeting}!")
-        tts(f"Good Evening, I hope you are doing well {greeting}!")
+        tts(f"Good Evening, I hope you are doing well {greeting}!", changeVolume)
 
 def listen():
     r = sr.Recognizer()
@@ -120,16 +119,16 @@ def listen():
     try:
         with sr.Microphone() as mic:
             print("Listening...")
-            tts("Listening...")
+            tts("Listening...", changeVolume)
             audio = r.listen(mic, timeout=None)
             command = r.recognize_google(audio).lower()
             print(command)
     except sr.UnknownValueError:
         print("Sorry, I did not understand that.") 
-        tts("Sorry, I did not understand that.")
+        tts("Sorry, I did not understand that.", changeVolume)
     except sr.RequestError:
         print("Sorry, I couldn't connect to the service.") 
-        tts(f"Sorry, I couldn't connect to the service{greeting}.")
+        tts(f"Sorry, I couldn't connect to the service{greeting}.", changeVolume)
 
     return command.lower()
 
@@ -153,11 +152,11 @@ if __name__ == "__main__":
                 command = listen()
                 if not process_command(command):
                     print("Not a valid command.")
-                    tts("Not a valid command.")
+                    tts("Not a valid command.", changeVolume)
 
             except Exception as e:
                 print("Alert me when you're actually ready!")
-                tts("Alert me when you're actually ready!")
+                tts("Alert me when you're actually ready!", changeVolume)
                 continue  
         
 

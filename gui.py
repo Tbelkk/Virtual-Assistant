@@ -4,6 +4,7 @@ sys.path.append(r"C:\Users\tyler\OneDrive\Desktop\Virtual-Assistant\Virtual-Assi
 import customtkinter as ctk
 import settings
 import main
+import keyboard
 
 
 class DashboardApp(ctk.CTk):
@@ -38,10 +39,8 @@ class DashboardPage(ctk.CTkFrame):
         label = ctk.CTkLabel(self, text="Dashboard", font=("Arial", 20))
         label.pack(pady=20)
 
-        volume_label = ctk.CTkLabel(self, text="Volume:")
-        volume_label.pack(pady=5)
-        self.volume_slider = ctk.CTkSlider(self, from_=0, to=5)
-        self.volume_slider.pack(pady=5, fill="x", padx=10)  
+        speak_button = ctk.CTkButton(self, width=100, height=75, text="Speak", font=("arial", 20), command=lambda: keyboard.press_and_release("/"))
+        speak_button.pack(pady=40, fill="x", padx=20)
 
         hotkeys_button = ctk.CTkButton(self, text="Hotkeys", command=lambda: controller.show_frame(HotkeysPage))
         hotkeys_button.pack(pady=10, fill="x", padx=10)  
@@ -49,6 +48,9 @@ class DashboardPage(ctk.CTkFrame):
         text_manager_button = ctk.CTkButton(self, text="Manage Text", command=lambda: controller.show_frame(TextManagerPage))
         text_manager_button.pack(pady=10, fill="x", padx=10)  
 
+
+def changeVolume(value):
+    main.changeVolume(value)
 
 
 class HotkeysPage(ctk.CTkFrame):
