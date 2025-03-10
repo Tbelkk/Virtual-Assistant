@@ -13,13 +13,16 @@ class DashboardApp(ctk.CTk):
 
         self.title("Genius")
         self.geometry("220x350")
-        self.resizable(False, False) 
+        self.resizable(True, True) 
 
         self.container = ctk.CTkFrame(self)
         self.container.pack(fill="both", expand=True)
+
+        self.container.grid_rowconfigure(0, weight=1) 
+        self.container.grid_columnconfigure(0, weight=1)
         
         self.frames = {} 
-        for Page in (DashboardPage, HotkeysPage, TextManagerPage):
+        for Page in (DashboardPage, HotkeysPage, AppManager):
             page = Page(parent=self.container, controller=self)
             self.frames[Page] = page
             page.grid(row=0, column=0, sticky="nsew") 
@@ -39,14 +42,14 @@ class DashboardPage(ctk.CTkFrame):
         label = ctk.CTkLabel(self, text="Dashboard", font=("Arial", 20))
         label.pack(pady=20)
 
-        speak_button = ctk.CTkButton(self, width=100, height=75, text="Speak", font=("arial", 20), command=lambda: keyboard.press_and_release("/"))
-        speak_button.pack(pady=40, fill="x", padx=20)
+        speak_button = ctk.CTkButton(self, width=90, height=75, text="Speak", font=("arial", 20), command=lambda: keyboard.press_and_release("/"))
+        speak_button.pack(pady=30, fill="x", padx=30)
 
         hotkeys_button = ctk.CTkButton(self, text="Hotkeys", command=lambda: controller.show_frame(HotkeysPage))
         hotkeys_button.pack(pady=10, fill="x", padx=10)  
 
-        text_manager_button = ctk.CTkButton(self, text="Manage Text", command=lambda: controller.show_frame(TextManagerPage))
-        text_manager_button.pack(pady=10, fill="x", padx=10)  
+        app_manager_button = ctk.CTkButton(self, text="App Manager", command=lambda: controller.show_frame(AppManager))
+        app_manager_button.pack(pady=10, fill="x", padx=10)  
 
 
 def changeVolume(value):
@@ -65,38 +68,37 @@ class HotkeysPage(ctk.CTkFrame):
         back_button.pack(pady=20)
 
 
-class TextManagerPage(ctk.CTkFrame):
+class AppManager(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
         self.text_list = []
 
-        label = ctk.CTkLabel(self, text="Text Manager", font=("Arial", 20))
+        label = ctk.CTkLabel(self, text="App Manager", font=("Arial", 20))
         label.pack(pady=20)
 
-        self.entry = ctk.CTkEntry(self, placeholder_text="Enter text")
-        self.entry.pack(pady=5, fill="x", padx=10)
+        self.appName = ctk.CTkEntry(self, placeholder_text="Enter App Name(One word)")
+        self.appName.pack(pady=5, fill="x", padx=10)
 
-        add_button = ctk.CTkButton(self, text="Add", command=self.add_text)
+        self.appPATH = ctk.CTkEntry(self, placeholder_text="Enter App PATH")
+        self.appPATH.pack(pady=5, fill="x", padx=10)
+
+        add_button = ctk.CTkButton(self, text="Add")
         add_button.pack(pady=5, fill="x", padx=10)
 
-        self.textbox = ctk.CTkTextbox(self, height=100)
-        self.textbox.pack(pady=5, fill="both", padx=10, expand=True)
-
-        delete_button = ctk.CTkButton(self, text="Delete", command=self.delete_text)
+        delete_button = ctk.CTkButton(self, text="Delete")
         delete_button.pack(pady=5, fill="x", padx=10)
 
         back_button = ctk.CTkButton(self, text="Back to Settings", command=lambda: controller.show_frame(DashboardPage))
         back_button.pack(pady=20)
 
-    def add_text(self):
-        text = self.entry.get()
-        if text:
-            self.text_list.append(text)
-            self.entry.delete(0, 'end')
+    def add_app(self):
+        appNameText = self.appName.get()
+        appPathText = self.appPATH.get()
+        if appNameText and appPathText:
             self.update_textbox()
 
-    def delete_text(self):
+    def delete_app(self):
         if self.text_list:
             self.text_list.pop()
             self.update_textbox()
