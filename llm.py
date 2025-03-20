@@ -8,7 +8,7 @@ def ai_response():
     response = ollama.chat(model='llama3.2', messages=[
         {
             'role': 'system',
-            'content': 'Respond with very short responses and you are pretty snarky.',
+            'content': 'Respond with very short responses and you are an advanced ai assistant.',
         },
         {
             'role': 'user',

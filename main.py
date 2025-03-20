@@ -2,35 +2,16 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 import speech_recognition as sr
 from datetime import datetime
-import psutil
 import pyttsx3
 import subprocess
 import os
-import pyautogui
 import keyboard
 import threading
-import gui
-import settings
-import json
 import llm
 
 
 greeting = "Tyler"
 engine = pyttsx3.init(driverName='sapi5')
-
-APPS_FILE = "apps.json"
-
-def run_gui():
-    subprocess.Popen(['python', 'gui.py'])
-
-def load_apps():
-    try:
-        with open(APPS_FILE, "r") as file:
-            return json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {}
-
-apps = load_apps()
 
 def process_command(command):
     commands = {
@@ -122,7 +103,18 @@ def close_program():
 
 
 def open_app(app_name):
-    apps = settings.get_apps()
+    apps = {
+        "google": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        "spotify": r"C:\Users\tyler\AppData\Roaming\Spotify\Spotify.exe",
+        "visual studio code": r"C:\Users\tyler\AppData\Local\Programs\Microsoft VS Code\Code.exe",
+        "discord": r"C:\Users\tyler\AppData\Local\Discord\Update.exe --processStart Discord.exe",
+        "notepad": "notepad.exe",
+        "calculator": "calc.exe",
+        "steam": r"C:\Program Files (x86)\Steam\Steam.exe",
+        "github": r"C:\Users\tyler\AppData\Local\GitHubDesktop\GitHubDesktop.exe",
+        "file": "explorer.exe"
+    }
+
     if app_name in apps:
         subprocess.Popen(apps[app_name], shell=True)
         print(f"Opening {app_name}")
@@ -132,7 +124,18 @@ def open_app(app_name):
         tts(f"Application {app_name} not recognized")
 
 def close_app(app_name):
-    apps = settings.get_apps()
+    apps = {
+        "google": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        "spotify": r"C:\Users\tyler\AppData\Roaming\Spotify\Spotify.exe",
+        "visual studio code": r"C:\Users\tyler\AppData\Local\Programs\Microsoft VS Code\Code.exe",
+        "discord": r"C:\Users\tyler\AppData\Local\Discord\Update.exe --processStart Discord.exe",
+        "notepad": "notepad.exe",
+        "calculator": "calc.exe",
+        "steam": r"C:\Program Files (x86)\Steam\Steam.exe",
+        "github": r"C:\Users\tyler\AppData\Local\GitHubDesktop\GitHubDesktop.exe",
+        "file": "explorer.exe"
+    }
+
     if app_name in apps:
         subprocess.Popen(apps[app_name]).terminate()
         print(f"Closing {app_name}")
@@ -182,7 +185,6 @@ hotkey_thread = threading.Thread(target=listen_for_hotkeys, daemon=True)
 hotkey_thread.start()
 
 if __name__ == "__main__":
-    run_gui() 
     greetTime()
 
     while True: 
