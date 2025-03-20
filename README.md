@@ -29,11 +29,19 @@ A Python-based voice assistant that responds to voice commands, performs system 
 ### Installation
 
 1. Clone this repository
-2. Install required packages:
-   ```
-   pip install speech_recognition pyttsx3 keyboard comtypes pycaw ollama
-   ```
-3. Ensure Ollama is installed and has the llama3.2 model available
+2. Create and Activate a Virtual Environment
+
+- Create a virtual environment:
+`python -m venv .venv`
+- Activate the virtual environment:
+- For Windows:
+`.venv\Scripts\activate`
+- This activates the virtual environment and should look like (venv) directory/of/your/project>
+- Install Requirements
+
+3. Install all the requirements given in requirements.txt by running the command
+  `pip install -r requirements.txt`
+4. Ensure Ollama is installed and has the llama3.2 model available
 
 ### Usage
 
