@@ -10,7 +10,7 @@ import threading
 import llm
 
 
-greeting = "Tyler"
+greeting = "User"
 engine = pyttsx3.init(driverName='sapi5')
 
 def process_command(command):
@@ -105,13 +105,13 @@ def close_program():
 def open_app(app_name):
     apps = {
         "google": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-        "spotify": r"C:\Users\tyler\AppData\Roaming\Spotify\Spotify.exe",
-        "visual studio code": r"C:\Users\tyler\AppData\Local\Programs\Microsoft VS Code\Code.exe",
-        "discord": r"C:\Users\tyler\AppData\Local\Discord\Update.exe --processStart Discord.exe",
+        "spotify": r"C:\Users\User\AppData\Roaming\Spotify\Spotify.exe",
+        "visual studio code": r"C:\Users\User\AppData\Local\Programs\Microsoft VS Code\Code.exe",
+        "discord": r"C:\Users\User\AppData\Local\Discord\Update.exe --processStart Discord.exe",
         "notepad": "notepad.exe",
         "calculator": "calc.exe",
         "steam": r"C:\Program Files (x86)\Steam\Steam.exe",
-        "github": r"C:\Users\tyler\AppData\Local\GitHubDesktop\GitHubDesktop.exe",
+        "github": r"C:\Users\User\AppData\Local\GitHubDesktop\GitHubDesktop.exe",
         "file": "explorer.exe"
     }
 
