@@ -95,12 +95,7 @@ A Python-based voice assistant that responds to voice commands, performs system 
 - Add support for more applications
 - Enhance AI response capabilities
 
-## License
-
-[Your License Here]
-
 ## Acknowledgments
 
 - This project uses the Ollama library for AI integration
-- Speech recognition powered by Google's speech recognition API
  
